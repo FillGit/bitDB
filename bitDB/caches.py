@@ -55,7 +55,7 @@ class CacheForViewCache(CacheForViewDB):
             json.dump(self.tree, write_file)
 
     def _find_lastID(self):
-        with open("root_lastid.json", "r") as read_file:
+        with open("root_lastID.json", "r") as read_file:
 	        list_json = json.load(read_file)
         lastID=list_json[0]['lastID']
         for e in self.tree:
@@ -108,7 +108,7 @@ class CacheForViewCache(CacheForViewDB):
         self.tree=[]
         with open(self.file_cache, "w") as write_file:
             json.dump(self.tree, write_file)
-        with open('root_lastID', "w") as write_file:
+        with open('root_lastID.json', "w") as write_file:
             json.dump([{"lastID": 9}], write_file)
 
     def add_data(self, parent_elementID, value):
@@ -187,18 +187,22 @@ class CacheForViewCache(CacheForViewDB):
         for e in tree_DB.dry_list:
             if e['action']=='delete':
                 e['status']=False
-        #!!!!!!!!!!!!!!!
+        #!!!!!!! Database change
         #Apply all changes to the Database.
         for e in tree_DB.dry_list:
             element_obj=Element()
             if e['action'] is not None :
                 element_obj.save_instance(instance=e)
+        #!!!!!!!!
         cache_db=CacheForViewDB()
         cache_db.update_data()
-        #!!!!!!!!!!!!!!!
         #Find and write to the file ID of the last element.
-        lastID=self._find_lastID()
-        with open('root_lastID', "w") as write_file:
+        #!!!!!!Database request
+        last_element_obj=Element.objects.latest('id')
+        lastID=last_element_obj.id
+        print ('Проверка последнего элемента',lastID)
+        #!!!!!!!!
+        with open('root_lastID.json', "w") as write_file:
             json.dump([{"lastID": lastID}], write_file)
         #And clean the cache.
         self.tree=[e for e in self.tree if e['status']==False]
