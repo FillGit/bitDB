@@ -1,0 +1,54 @@
+
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <title>Кэш для огромной БД</title>
+  <style type="text/css">
+   .block1 {
+    width: 50%; /* Ширина */
+    background: #ffc; /* Цвет фона */
+    padding: 10px; /* Поля */
+    -moz-box-sizing: border-box; /* Для Firefox */
+    -webkit-box-sizing: border-box; /* Для Safari и Chrome */
+    box-sizing: border-box; /* Для IE и Opera */
+    float: left;
+    vertical-align: top; /* Выравнивание по верхнему краю ячеек */
+   }
+   .block2 {
+    width: 50%; /* Ширина */
+    background: #ff0; /* Цвет фона */
+    padding: 10px; /* Поля */
+    -moz-box-sizing: border-box; /* Для Firefox */
+    -webkit-box-sizing: border-box; /* Для Safari и Chrome */
+    box-sizing: border-box; /* Для IE и Opera */
+    float: right;
+    vertical-align: top; /* Выравнивание по верхнему краю ячеек */
+   }
+  </style>
+ </head>
+ <body>
+   <div class="block1">
+        <p>CACHE:</p>
+         <form action="/index/" method="post">
+         {% csrf_token %}
+         {{ form1.as_p }}
+         <input type="submit" name="root" value="Add root element" />
+         <p><input type="submit" name="add" value="Add" />
+         <input type="submit" name="delete" value="Delete" />
+         <input type="submit" name="change" value="Change" />
+         <input type="submit" name="apply" value="Apply" /></p>
+         </form>
+   </div>
+
+   <div class="block2">
+         <p>DATABASE:</p>
+         <form action="/index/" method="post">
+         {% csrf_token %}
+         {{ form2.as_p  }}
+         <input type="submit" name="transfer" value="<<<<<" />
+         <input type="submit" name="reset" value="Reset" />
+         </form>
+   </div>
+
+ </body>
+</html>
