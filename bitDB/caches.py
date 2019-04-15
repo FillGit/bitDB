@@ -12,8 +12,10 @@ class CacheForViewDB():
         self._get_data()
 
     def update_data(self):
+        #!!!!! Database request
         tree=Treelist(list(Element.objects.values('id','value','parentID',
                                                   'level','status')))
+        #!!!!!!
         self.tree= tree.dry_list
         with open(self.file_cache, "w") as write_file:
             json.dump(self.tree, write_file)
@@ -22,6 +24,7 @@ class CacheForViewDB():
         with open(self.file_cache, "r") as read_file:
 	        self.tree = json.load(read_file)
 
+    #This function for field 'choise element' of Form_DB
     def get_choicelist(self):
         choicelist = []
         if self.tree is not None:
@@ -235,7 +238,7 @@ class CacheForViewCache(CacheForViewDB):
                 choicelist.append([e['id'],option_label])
         return (tuple(choicelist))
 
-#The Treelist class is needed to build a tree of elements in a views.
+#The Treelist class is needed to build a tree list of elements
 class Treelist():
     def __init__(self, wet_list):
         wet_list.sort(key=lambda d: (d['id']))
@@ -254,9 +257,11 @@ class Treelist():
             list_parentID.append(e['parentID'])
         return list_ID, list_parentID
 
+    #This function determines which elements have no parents in this list.
     def _without_parent(self):
             return set(self.list_parentID).difference(set(self.list_ID))
 
+    #This function builds a tree.
     def _tree(self, n):
         if n>0:
             e=self.wet_list[0]
