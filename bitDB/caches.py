@@ -60,7 +60,6 @@ class CacheForViewCache(CacheForViewDB):
                 lastID=e['lastID']
         return lastID
 
-    
     def _check_parent_and_record(self):
         tree=Treelist(self.tree)
         self.tree=tree.dry_list
