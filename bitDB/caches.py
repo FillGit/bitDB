@@ -200,7 +200,6 @@ class CacheForViewCache(CacheForViewDB):
         #!!!!!!Database request
         last_element_obj=Element.objects.latest('id')
         lastID=last_element_obj.id
-        print ('Проверка последнего элемента',lastID)
         #!!!!!!!!
         with open('root_lastID.json', "w") as write_file:
             json.dump([{"lastID": lastID}], write_file)
