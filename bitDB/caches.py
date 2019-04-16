@@ -71,10 +71,11 @@ class CacheForViewCache(CacheForViewDB):
             for k in self.tree:
                 if k['id']==e['parentID']:
                     action_parent=k['action']
-            if (action_parent=='delete') and e['status'] and (e['action']=='add'):
+            if (action_parent=='delete') and e['status'] and (e['action']=='add' or
+                                                              e['action']=='change'):
                 e['action']='delete'
                 e['status']=False
-            elif (action_parent=='delete') and e['status'] and (e['action']!='add'):
+            elif (action_parent=='delete') and e['status']:
                 e['action']='delete'
         self._record_tree()
 
@@ -147,6 +148,7 @@ class CacheForViewCache(CacheForViewDB):
         #!!!!! Database request
         tree_DB=Treelist(list(Element.objects.values('id','value','parentID',
                                                      'level','status')))
+        list_current_id_db=[e['id'] for e in tree_DB.dry_list]
         #!!!!!
         #tree_DB.dry_list - this is a tree list from the Database.
         #Add an 'action' field to the list tree_DB.dry_list
@@ -156,7 +158,7 @@ class CacheForViewCache(CacheForViewDB):
         #And create a list tmp_add_list for further addition.
         tmp_add_list=[]
         for c in self.tree:
-            if c['action']=='add':
+            if (c['action']=='add') or (c['action']=='change'):
                 tmp_add_list.append(c)
             else:
                 for d in tree_DB.dry_list:
@@ -178,10 +180,7 @@ class CacheForViewCache(CacheForViewDB):
             for k in tree_DB.dry_list:
                 if k['id']==e['parentID']:
                     action_parent=k['action']
-            if (action_parent=='delete') and e['status'] and (e['action']=='add'):
-                e['action']='delete'
-                e['status']=False
-            elif (action_parent=='delete') and e['status'] and (e['action']!='add'):
+            if (action_parent=='delete'):
                 e['action']='delete'
         #Only now changes the status of deleted elements.
         for e in tree_DB.dry_list:
@@ -191,7 +190,9 @@ class CacheForViewCache(CacheForViewDB):
         #Apply all changes to the Database.
         for e in tree_DB.dry_list:
             element_obj=Element()
-            if e['action'] is not None :
+            if (e['action']=='delete') and (e['id'] in list_current_id_db):
+                element_obj.save_instance(instance=e)
+            elif (e['action']=='add') or (e['action']=='change'):
                 element_obj.save_instance(instance=e)
         #!!!!!!!!
         cache_db=CacheForViewDB()

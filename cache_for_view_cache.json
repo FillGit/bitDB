@@ -1,1 +1,1 @@
-[{"id": 10, "value": "QQQQ", "parentID": 0, "level": 0, "status": false, "lastID": 15, "action": "delete"}]
+[{"id": 1, "value": "master Element", "parentID": 0, "level": 0, "status": false, "lastID": 9, "action": "delete"}, {"id": 10, "value": "ccc", "parentID": 9, "level": 5, "status": false, "lastID": 10, "action": "delete"}, {"id": 11, "value": "Node 2", "parentID": 10, "level": 6, "status": false, "lastID": 11, "action": "delete"}]
