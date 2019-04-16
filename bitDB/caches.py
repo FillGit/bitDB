@@ -157,7 +157,8 @@ class CacheForViewCache(CacheForViewDB):
         #Assign an action for each element in the list - tree_DB.dry_list.
         #And create a list tmp_add_list for further addition.
         tmp_add_list=[]
-        tmp_tree_clean=[e for e in self.tree if e['status']==False]
+        tmp_tree_clean=[e for e in self.tree if (e['status']==False
+                                                    or e['action']=='delete')]
         for c in self.tree:
             if (c['action']=='add') or (c['action']=='change'):
                 tmp_add_list.append(c)
