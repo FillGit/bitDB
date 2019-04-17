@@ -216,6 +216,8 @@ class CacheForViewCache(CacheForViewDB):
                 e['status']=False
             else:
                 e['action']=None
+        tree=Treelist(self.tree)
+        self.tree=tree.dry_list
         self._record_tree()
 
     #This function for validation Form_DB
