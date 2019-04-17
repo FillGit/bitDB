@@ -157,8 +157,6 @@ class CacheForViewCache(CacheForViewDB):
         #Assign an action for each element in the list - tree_DB.dry_list.
         #And create a list tmp_add_list for further addition.
         tmp_add_list=[]
-        tmp_tree_clean=[e for e in self.tree if (e['status']==False
-                                                    or e['action']=='delete')]
         for c in self.tree:
             if (c['action']=='add') or (c['action']=='change'):
                 tmp_add_list.append(c)
@@ -206,8 +204,18 @@ class CacheForViewCache(CacheForViewDB):
         #!!!!!!!!
         with open('root_lastID.json', "w") as write_file:
             json.dump([{"lastID": lastID}], write_file)
-        #And clean the cache.
-        self.tree=tmp_tree_clean
+        #And to apply the cache.
+        for d in tree_DB.dry_list:
+            for c in self.tree:
+                if d['id']==c['id']:
+                    c['action']=d['action']
+                    c['status']=d['status']
+                    break
+        for e in self.tree:
+            if (e['action']=='delete') or e['status']==False:
+                e['status']=False
+            else:
+                e['action']=None
         self._record_tree()
 
     #This function for validation Form_DB
