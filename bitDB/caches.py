@@ -158,30 +158,38 @@ class CacheForViewCache(CacheForViewDB):
         #And create a list tmp_add_list for further addition.
         tmp_add_list=[]
         for c in self.tree:
-            if (c['action']=='add') or (c['action']=='change'):
+            if (c['action']=='add'):
                 tmp_add_list.append(c)
+            elif (c['action']=='change'):
+                has_already=False
+                for d in tree_DB.dry_list:
+                    if c['id']==d['id']:
+                        d['value']=c['value']
+                        d['action']='change'
+                        has_already==True
+                        break
+                if not has_already:
+                    tmp_add_list.append(c)
             else:
                 for d in tree_DB.dry_list:
                     if c['id']==d['id']:
-                        if (c['action']=='delete') and (c['status']):
+                        if (c['action']=='delete') or (c['status']==False):
                             d['action']='delete'
                             c['status']=False
-                        elif c['action']=='change':
-                            d['value']=c['value']
-                            d['action']='change'
+                            d['status']=False
         #Add tmp_add_list in tree_DB.dry_list
         for e in tmp_add_list:
             tree_DB.dry_list.append(e)
         #Сreate a tree again
         tree_DB=Treelist(tree_DB.dry_list)
         #Looks at the tree. What other elements need to be removed.
+        action_parent=None
         for e in tree_DB.dry_list:
-            action_parent=None
             for k in tree_DB.dry_list:
                 if k['id']==e['parentID']:
                     action_parent=k['action']
-            if (action_parent=='delete'):
-                e['action']='delete'
+                if (action_parent=='delete'):
+                    e['action']='delete'
         #Only now changes the status of deleted elements.
         for e in tree_DB.dry_list:
             if e['action']=='delete':
